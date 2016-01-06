@@ -1,0 +1,1 @@
+python .\main.py -d 60 -u http://m.sohu.com -o /tmp/backup
