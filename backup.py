@@ -6,7 +6,7 @@ import urllib
 import requests
 from bs4 import BeautifulSoup
 
-from config import BASE_DIR, BACKUP_DIR
+from config import BASE_DIR
 
 
 def mkdir(backup_dir):
