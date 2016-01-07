@@ -45,9 +45,14 @@ def js_backup(soup, path):
         return
     path = os.path.join(path, 'js')
     for js in js_list:
-        link = js.get('src')
-        filepath = os.path.join(path, u'%d.jpg' % random.randint(10, 20))
-        urllib.urlretrieve(link, filepath)
+    	filepath = os.path.join(path, u'%d.jpg' % random.randint(10, 20))
+    	if js.has_key('src'):
+        	link = js.get('src')
+        	urllib.urlretrieve(link, filepath)
+        else:
+        	with open(filepath, 'wb') as f:
+        		f.write(js.text.encode('utf-8'))
+
     print 'js had backup.'
 
 
@@ -83,7 +88,7 @@ def css_backup(soup, path):
 
 
 def html_backup(html, path):
-    with open(os.path.join(path, 'html.html'), 'wb') as f:
+    with open(os.path.join(path, 'html.html'), 'w') as f:
         f.write(html.encode('utf-8'))
    	print 'html has backup.'
 
