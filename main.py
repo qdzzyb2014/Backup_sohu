@@ -2,10 +2,12 @@
 import sys
 import time
 import getopt
+from multiprocessing import Process
+from backup import backup
+from config import TIMER, URL, BACKUP_DIR
 
 from multiprocessing import Process
 
-from backup import backup
 
 def main():
     try:
@@ -24,9 +26,7 @@ def main():
             assert False, 'unhandled option'
 
     while True:
-        p = Process(target=backup,
-                    args=(url, backup_dir))
-        	# backup(timer=timer, url=url, backup_dir=backup_dir)
+    	p = Process(target=backup, args=(url, backup_dir))
         p.start()
         time.sleep(timer)
 
