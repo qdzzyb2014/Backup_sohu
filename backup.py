@@ -6,7 +6,8 @@ import urllib
 import requests
 from bs4 import BeautifulSoup
 
-from config import BASE_DIR,BACKUP_DIR
+from config import BASE_DIR, BACKUP_DIR
+
 
 def mkdir(backup_dir):
     dirnames = ['images', 'js', 'css']
@@ -26,7 +27,7 @@ def create_file(lists, get_arg, path, fe):
     for l in lists:
         target = l.get(get_arg)
         filepath = os.path.join(path,
-                u'{fn}.{fe}'.format(fn=file_index, fe=fe))
+                        '{fn}.{fe}'.format(fn=file_index, fe=fe))
         urllib.urlretrieve(target, filepath)
         file_index += 1
 
@@ -34,7 +35,8 @@ def create_file(lists, get_arg, path, fe):
 def create_inline_file(lists, path, fe):
     file_index = 1
     for l in lists:
-        with open(os.path.join(path, 'inline_%d.%s'%(file_index,fe)), 'wb') as f:
+        with open(os.path.join(path,
+                        'inline_%d.%s' % (file_index, fe)), 'wb') as f:
             f.write(l.text)
         file_index += 1
 
@@ -49,24 +51,6 @@ def backup(url, backup_dir):
     images_backup(soup, path)
     css_backup(soup, path)
     js_backup(soup, path)
-
-
-def css_backup(soup, path):
-
-    # 外部样式表
-    path = os.path.join(path, 'css')
-    ex_css_list = soup.find_all('link', type='text/css')
-    for ex_css in ex_css_list:
-        link = ex_css.get('href')
-        filepath = os.path.join(path, 'home.css')
-        urllib.urlretrieve(link, filepath)
-
-    # 行内
-    inline_css_list = soup.find_all('style', type='text/css')
-    for inline_css in inline_css_list:
-        with open(os.path.join(path, 'inline.css'), 'wb') as f:
-            f.write(inline_css.text)
-    print 'css has backup.'
 
 
 def js_backup(soup, path):
@@ -86,7 +70,7 @@ def js_backup(soup, path):
             in_js_list.append(js)
     # download ex_js
     create_file(ex_js_list, 'src', path, fe)
-    
+
     # inline
     create_inline_file(in_js_list, path, fe)
     print 'js had backuped.'
@@ -120,4 +104,3 @@ def html_backup(html, path):
     with open(os.path.join(path, 'html.html'), 'wb') as f:
         f.write(html.encode('utf-8'))
     print 'HTML has backuped.'
-
