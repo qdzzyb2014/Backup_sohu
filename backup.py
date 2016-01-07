@@ -47,7 +47,7 @@ def backup(url, backup_dir):
     r = requests.get(url)
     html = r.text
     html_backup(html, path)
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, 'html.parser')
     images_backup(soup, path)
     css_backup(soup, path)
     js_backup(soup, path)
