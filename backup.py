@@ -61,10 +61,9 @@ def js_backup(soup, path):
     fe = 'js'
     path = os.path.join(path, 'js')
 
-    ex_js_list = []
-    in_js_list = []
+    ex_js_list , in_js_list= [], []
     for js in js_list:
-        if js.has_key('src'):
+        if js.has_attr('src'):
             ex_js_list.append(js)
         else:
             in_js_list.append(js)
