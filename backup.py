@@ -2,6 +2,7 @@
 import os
 import time
 import urllib
+import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -32,6 +33,7 @@ def create_file(lists, get_arg, path, fe):
         file_index += 1
 
 
+
 def create_inline_file(lists, path, fe):
     file_index = 1
     for l in lists:
@@ -53,7 +55,7 @@ def backup(url, backup_dir):
     js_backup(soup, path)
 
 
-def js_backup(soup, path):
+def js_backup(soup, path, url=None):
     js_list = soup.find_all('script')
     if not js_list:
         print 'There is no js.'
@@ -64,6 +66,8 @@ def js_backup(soup, path):
     ex_js_list , in_js_list= [], []
     for js in js_list:
         if js.has_attr('src'):
+            if not is_abs_url(js.get('src')):
+                js['src'] = urlparse.urljoin(url, js.get('src'))
             ex_js_list.append(js)
         else:
             in_js_list.append(js)
@@ -103,3 +107,8 @@ def html_backup(html, path):
     with open(os.path.join(path, 'html.html'), 'wb') as f:
         f.write(html.encode('utf-8'))
     print 'HTML has backuped.'
+
+
+def is_abs_url(url):
+    r = urlparse.urlparse(url)
+    return r.scheme
