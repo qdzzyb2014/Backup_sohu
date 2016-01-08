@@ -22,19 +22,19 @@ def mkdir(backup_dir):
     return path
 
 
-def create_file(lists, get_arg, path, fe):
+def create_file(lists, get_arg, path):
     lists = set(lists)
-    file_index = 1
     for l in lists:
         target = l.get(get_arg)
+        filename = target.split('/')[-1]
         filepath = os.path.join(path,
-                        '{fn}.{fe}'.format(fn=file_index, fe=fe))
+                        '{fn}'.format(fn=filename))
         urllib.urlretrieve(target, filepath)
-        file_index += 1
 
 
 
 def create_inline_file(lists, path, fe):
+    lists = set(lists)
     file_index = 1
     for l in lists:
         with open(os.path.join(path,
@@ -72,7 +72,7 @@ def js_backup(soup, path, url=None):
         else:
             in_js_list.append(js)
     # download ex_js
-    create_file(ex_js_list, 'src', path, fe)
+    create_file(ex_js_list, 'src', path)
 
     # inline
     create_inline_file(in_js_list, path, fe)
@@ -85,7 +85,7 @@ def images_backup(soup, path):
         print 'There is no js'
         return
     path = os.path.join(path, 'images')
-    create_file(img_list, 'src', path, 'jpg')
+    create_file(img_list, 'src', path)
     print 'Iamges had backuped.'
 
 
@@ -94,12 +94,11 @@ def css_backup(soup, path):
     fe = 'css'
     path = os.path.join(path, 'css')
     ex_css_list = soup.find_all('link', type='text/css')
-    create_file(ex_css_list, 'href', path, 'css')
+    create_file(ex_css_list, 'href', path)
 
     # inline
     inline_css_list = soup.find_all('style', type='text/css')
     create_inline_file(inline_css_list, path, fe)
-
     print 'CSS has backuped.'
 
 
