@@ -2,7 +2,7 @@
 import os
 import time
 import urllib
-import urlparse
+from urlparse import urlparse, urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -52,7 +52,7 @@ def backup(url, backup_dir):
     soup = BeautifulSoup(html, 'html.parser')
     images_backup(soup, path)
     css_backup(soup, path)
-    js_backup(soup, path)
+    js_backup(soup, path, url)
 
 
 def js_backup(soup, path, url=None):
@@ -67,7 +67,7 @@ def js_backup(soup, path, url=None):
     for js in js_list:
         if js.has_attr('src'):
             if not is_abs_url(js.get('src')):
-                js['src'] = urlparse.urljoin(url, js.get('src'))
+                js['src'] = urljoin(url, js.get('src'))
             ex_js_list.append(js)
         else:
             in_js_list.append(js)
@@ -110,5 +110,5 @@ def html_backup(html, path):
 
 
 def is_abs_url(url):
-    r = urlparse.urlparse(url)
+    r = urlparse(url)
     return r.scheme
