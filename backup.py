@@ -97,7 +97,7 @@ def css_backup(soup, path):
     fe = 'css'
     path = os.path.join(path, 'css')
     ex_css_list = soup.find_all('link', type='text/css')
-    create_file(ex_css_list, 'href', path)
+    create_external_file(ex_css_list, 'href', path)
 
     # inline
     inline_css_list = soup.find_all('style', type='text/css')

@@ -16,6 +16,7 @@ def main():
 	except getopt.GetoptError as err:
 		print str(err)
 		sys.exit(2)
+
 	for o, a in opts:
 	    if o == '-d':
 	    	timer = int(a)
