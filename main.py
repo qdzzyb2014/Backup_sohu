@@ -27,6 +27,7 @@ def main():
 	    	assert False, 'unhandled option'
 
 	while True:
+		# create setprocess
 		p = Process(target=backup, args=(url, backup_dir))
 		p.start()
 		time.sleep(timer)
