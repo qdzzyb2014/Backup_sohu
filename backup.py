@@ -74,9 +74,9 @@ def css_backup(soup, path):
     print 'CSS has backed up.'
 
 
-def html_backup(html, path):
+def html_backup(soup, path):
     with open(os.path.join(path, 'html.html'), 'wb') as f:
-        f.write(html.encode('utf-8'))
+        f.write(soup.prettify().encode('utf-8'))
     print 'HTML has backed up.'
 
 

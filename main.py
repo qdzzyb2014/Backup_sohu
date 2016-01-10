@@ -28,12 +28,10 @@ def back_up(url, backup_dir):
     print time.strftime('%Y.%m.%d %H:%M')
     path = mkdir(backup_dir)
     r = requests.get(url)
-    html = r.text
-    backup.html_backup(html, path)                     # back up html
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(r.text, 'html.parser')
     for dirname in DIRNAMES:
         getattr(backup, '{dn}_backup'.format(dn=dirname))(
-            soup, path)                 # back up js
+            soup, path)
 
 
 def main():
