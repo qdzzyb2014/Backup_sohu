@@ -4,24 +4,6 @@ import time
 import urllib
 from urlparse import urlparse, urljoin
 
-import requests
-from bs4 import BeautifulSoup
-
-from config import BASE_DIR
-
-
-def mkdir(backup_dir):
-    # 创建备份文件夹
-    dirnames = ['images', 'js', 'css']
-    t = time.strftime('%Y%m%d%H%M')
-    path = os.path.join(BASE_DIR, backup_dir, t)
-    if os.path.exists(path):
-        print u'文件夹已存在'
-    else:
-        for dirname in dirnames:
-            os.makedirs(os.path.join(path, dirname))
-    return path
-
 
 def create_external_file(lists, get_arg, path):
     # 备份外部目标文件
@@ -30,9 +12,8 @@ def create_external_file(lists, get_arg, path):
         target = l.get(get_arg)
         filename = target.split('/')[-1]
         filepath = os.path.join(path,
-                        '{fn}'.format(fn=filename))
+                                '{fn}'.format(fn=filename))
         urllib.urlretrieve(target, filepath)
-
 
 
 def create_inline_file(lists, path, fe):
@@ -41,21 +22,9 @@ def create_inline_file(lists, path, fe):
     file_index = 1
     for l in lists:
         with open(os.path.join(path,
-                        'inline_%d.%s' % (file_index, fe)), 'wb') as f:
+                               'inline_%d.%s' % (file_index, fe)), 'wb') as f:
             f.write(l.text)
         file_index += 1
-
-
-def backup(url, backup_dir):
-    print time.strftime('%Y.%m.%d %H:%M')
-    path = mkdir(backup_dir)
-    r = requests.get(url)
-    html = r.text
-    html_backup(html, path)                     # back up html
-    soup = BeautifulSoup(html, 'html.parser')
-    images_backup(soup, path)                   # back up images
-    css_backup(soup, path)
-    js_backup(soup, path, url)                  # back up js
 
 
 def js_backup(soup, path, url=None):
@@ -66,7 +35,7 @@ def js_backup(soup, path, url=None):
     fe = 'js'
     path = os.path.join(path, 'js')
 
-    ex_js_list , in_js_list = [], []
+    ex_js_list, in_js_list = [], []
     for js in js_list:
         if js.has_attr('src'):
             if not is_abs_url(js.get('src')):
@@ -79,7 +48,7 @@ def js_backup(soup, path, url=None):
 
     # inline
     create_inline_file(in_js_list, path, fe)
-    print 'js had backuped.'
+    print 'js had backed up.'
 
 
 def images_backup(soup, path):
@@ -89,7 +58,7 @@ def images_backup(soup, path):
         return
     path = os.path.join(path, 'images')
     create_external_file(img_list, 'src', path)
-    print 'Iamges had backuped.'
+    print 'Iamges had backed up.'
 
 
 def css_backup(soup, path):
@@ -102,13 +71,13 @@ def css_backup(soup, path):
     # inline
     inline_css_list = soup.find_all('style', type='text/css')
     create_inline_file(inline_css_list, path, fe)
-    print 'CSS has backuped.'
+    print 'CSS has backed up.'
 
 
 def html_backup(html, path):
     with open(os.path.join(path, 'html.html'), 'wb') as f:
         f.write(html.encode('utf-8'))
-    print 'HTML has backuped.'
+    print 'HTML has backed up.'
 
 
 def is_abs_url(url):
