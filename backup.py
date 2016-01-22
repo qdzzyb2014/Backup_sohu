@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import time
 import urllib
 from urlparse import urlparse, urljoin
 
