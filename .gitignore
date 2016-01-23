@@ -1,5 +1,4 @@
 tmp
 *.pyc
 venv
-test.py
 start.bat

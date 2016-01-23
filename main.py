@@ -17,7 +17,7 @@ def mkdir(backup_dir):
     t = time.strftime('%Y%m%d%H%M')
     path = os.path.join(BASE_DIR, backup_dir, t)
     if os.path.exists(path):
-        print u'文件夹已存在'
+        print 'doc has existed'
     else:
         for dirname in DIRNAMES:
             os.makedirs(os.path.join(path, dirname))
