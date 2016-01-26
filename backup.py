@@ -4,26 +4,21 @@ import urllib
 from urlparse import urlparse, urljoin
 
 
-def create_external_file(lists, get_arg, path):
+def create_external_file(t_tag, get_arg, path):
     # 备份外部目标文件
-    lists = set(lists)
-    for l in lists:
-        target = l.get(get_arg)
-        filename = target.split('/')[-1]
-        filepath = os.path.join(path,
-                                '{fn}'.format(fn=filename))
+    target = t_tag.get(get_arg)
+    filename = target.split('/')[-1]
+    filepath = os.path.join(path,
+                            '{fn}'.format(fn=filename))
+    if not os.path.exists(filepath):
         urllib.urlretrieve(target, filepath)
 
 
-def create_inline_file(lists, path, fe):
+def create_inline_file(t_tag, path, fe, f_index):
     # 备份内部目标
-    lists = set(lists)
-    file_index = 1
-    for l in lists:
-        with open(os.path.join(path,
-                               'inline_%d.%s' % (file_index, fe)), 'wb') as f:
-            f.write(l.text)
-        file_index += 1
+    with open(os.path.join(path,
+                           'inline_%d.%s' % (f_index, fe)), 'wb') as f:
+        f.write(t_tag.text)
 
 
 def js_backup(soup, path, url=None):
@@ -34,29 +29,30 @@ def js_backup(soup, path, url=None):
     fe = 'js'
     path = os.path.join(path, 'js')
 
-    ex_js_list, in_js_list = [], []
+    inline_file_index = 0  # for inline file name
     for js in js_list:
         if js.has_attr('src'):
+            # check the url
             if not is_abs_url(js.get('src')):
                 js['src'] = urljoin(url, js.get('src'))
-            ex_js_list.append(js)
+            # download ex_js
+            create_external_file(js, 'src', path)
         else:
-            in_js_list.append(js)
-    # download ex_js
-    create_external_file(ex_js_list, 'src', path)
+            # download inline
+            create_inline_file(js, path, fe, inline_file_index)
+            inline_file_index += 1
 
-    # inline
-    create_inline_file(in_js_list, path, fe)
     print 'js had backed up.'
 
 
 def images_backup(soup, path):
     img_list = soup.find_all('img')
     if not img_list:
-        print 'There is no js'
+        print 'There is no images.'
         return
     path = os.path.join(path, 'images')
-    create_external_file(img_list, 'src', path)
+    for img in img_list:
+        create_external_file(img, 'src', path)
     print 'Iamges had backed up.'
 
 
@@ -65,16 +61,22 @@ def css_backup(soup, path):
     fe = 'css'
     path = os.path.join(path, 'css')
     ex_css_list = soup.find_all('link', type='text/css')
-    create_external_file(ex_css_list, 'href', path)
+    if ex_css_list:
+        for ex_css in ex_css_list:
+            create_external_file(ex_css, 'href', path)
 
     # inline
     inline_css_list = soup.find_all('style', type='text/css')
-    create_inline_file(inline_css_list, path, fe)
+    if inline_css_list:
+        inline_file_index = 0
+        for css in inline_css_list:
+            create_inline_file(css, path, fe, inline_file_index)
+            inline_file_index += 1
     print 'CSS has backed up.'
 
 
 def html_backup(soup, path):
-    with open(os.path.join(path, 'html.html'), 'wb') as f:
+    with open(os.path.join(path, 'index.html'), 'wb') as f:
         f.write(soup.prettify().encode('utf-8'))
     print 'HTML has backed up.'
 

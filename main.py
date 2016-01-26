@@ -20,7 +20,8 @@ def mkdir(backup_dir):
         print 'doc has existed'
     else:
         for dirname in DIRNAMES:
-            os.makedirs(os.path.join(path, dirname))
+            if dirname != 'html':
+                os.makedirs(os.path.join(path, dirname))
     return path
 
 
