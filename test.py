@@ -39,7 +39,7 @@ class BackUpTestCase(unittest.TestCase):
         with mock.patch('backup.os.path.exists', return_value=True):
             backup.create_external_file(t_tag, get_arg, path)
             t_tag.get.assert_called_with(get_arg)
-            self.assertFalse(mock_urllib.urlretrieve.called)
+            mock_urllib.urlretrieve.assert_not_called()
 
         with mock.patch('backup.os.path.exists', return_value=False):
             backup.create_external_file(t_tag, get_arg, path)
@@ -74,7 +74,7 @@ class BackUpTestCase(unittest.TestCase):
     def test_images_backup(self, mock_stdout, mock_create_external_file):
         self.soup.find_all.return_value = []
         backup.images_backup(self.soup, self.path)
-        self.assertFalse(mock_create_external_file.called)
+        mock_create_external_file.assert_not_called()
         self.assertTrue(mock_stdout.getvalue() == 'There is no images.\n')
 
         mock_create_external_file.reset_mock()
@@ -95,8 +95,8 @@ class BackUpTestCase(unittest.TestCase):
     def test_css_backup(self, mock_stdout, mock_ex_file, mock_inline_file):
         self.soup.find_all.return_value = []
         backup.css_backup(self.soup, self.path)
-        self.assertFalse(mock_ex_file.called)
-        self.assertFalse(mock_inline_file.called)
+        mock_ex_file.assert_not_called()
+        mock_inline_file.assert_not_called()
 
         self.soup.find_all.return_value = [1, 2, 3]
         mock_ex_file.reset_mock()
@@ -121,8 +121,8 @@ class BackUpTestCase(unittest.TestCase):
         self.soup.find_all.return_value = js_list
         backup.js_backup(self.soup, self.path)
         self.assertTrue(mock_stdout.getvalue() == 'There is no js.\n')
-        self.assertFalse(mock_ex_file.called)
-        self.assertFalse(mock_inline_file.called)
+        mock_ex_file.assert_not_called()
+        mock_inline_file.assert_not_called()
 
         # else
         for i in xrange(5):
@@ -156,7 +156,7 @@ class MainTestCase(unittest.TestCase):
         with mock.patch('main.os.path.exists', return_value=True):
             self.assertEqual(main.mkdir(BACKUP_DIR), self.path)
             main.os.path.join.assert_called_with(BASE_DIR, BACKUP_DIR, 'time')
-            self.assertFalse(main.os.makedirs.called)
+            main.os.makedirs.assert_not_called()
             self.assertTrue(mock_stdout.getvalue() == 'doc has existed\n')
 
         # test the dir has not exists
