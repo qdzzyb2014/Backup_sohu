@@ -191,6 +191,6 @@ class MainTestCase(unittest.TestCase):
 if __name__ == '__main__':
     suites = [
         unittest.TestLoader().loadTestsFromTestCase(BackUpTestCase),
-        unittest.TestLoader().loadTestsFromTestCase(BackUpTestCase)
+        unittest.TestLoader().loadTestsFromTestCase(MainTestCase)
         ]
     map(unittest.TextTestRunner(verbosity=3).run, suites)
