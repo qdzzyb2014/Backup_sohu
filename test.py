@@ -3,7 +3,7 @@ import mock
 import unittest
 
 from StringIO import StringIO
-
+import bs4
 
 import backup
 import main
@@ -110,7 +110,7 @@ class BackUpTestCase(unittest.TestCase):
     @mock.patch('backup.create_inline_file')
     @mock.patch('backup.create_external_file')
     @mock.patch('sys.stdout', new_callable=StringIO)
-    @mock.patch('bs4.Tag')
+    @mock.patch('bs4.Tag', autospec=True)
     def test_js_backup(self, mock_tag, mock_stdout,
                        mock_ex_file, mock_inline_file):
         # init
@@ -129,8 +129,10 @@ class BackUpTestCase(unittest.TestCase):
             js_list.append(mock_tag())
         self.soup.find_all.return_value = js_list
         backup.os.path.join.return_value = 'js path'
-        backup.js_backup(self.soup, self.path)
 
+        backup.js_backup(self.soup, self.path)
+        for js in js_list:
+            js.get.assert_called_with('src')
         mock_ex_file.assert_called_with(js_list[3], 'src', 'js path')
         self.assertTrue(mock_ex_file.call_count == 5)
         self.assertTrue(mock_inline_file.call_count == 0)
