@@ -3,7 +3,6 @@ import mock
 import unittest
 
 from StringIO import StringIO
-import bs4
 
 import backup
 import main
@@ -190,4 +189,8 @@ class MainTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    suites = [
+        unittest.TestLoader().loadTestsFromTestCase(BackUpTestCase),
+        unittest.TestLoader().loadTestsFromTestCase(BackUpTestCase)
+        ]
+    map(unittest.TextTestRunner(verbosity=3).run, suites)
